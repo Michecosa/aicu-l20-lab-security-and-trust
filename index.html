@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AICU L18 - Payload lab</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navigazione">
+        <button class="nav-icon is-active" aria-label="Ticket">▣</button>
+        <button class="nav-icon" aria-label="Inbox">□</button>
+        <button class="nav-icon" aria-label="Messaggi">◌</button>
+        <button class="nav-icon" aria-label="Impostazioni">⚙</button>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Support ops</p>
+            <h1>Dashboard ticket</h1>
+          </div>
+
+          <div class="operator-card" aria-label="Operatore corrente">
+            <span class="avatar">GR</span>
+            <div>
+              <span>Operatore</span>
+              <strong>Giulia Rinaldi</strong>
+            </div>
+            <div>
+              <span>Turno</span>
+              <strong>08:00 - 16:00</strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="mission-board" aria-labelledby="mission-title">
+          <div>
+            <p class="eyebrow">Modulo 05</p>
+            <h2 id="mission-title">Dal contenuto all'effetto osservabile</h2>
+          </div>
+          <ol>
+            <li>source</li>
+            <li>percorso</li>
+            <li>sink</li>
+            <li>effetto</li>
+            <li>evidenza</li>
+          </ol>
+        </section>
+
+        <section class="layout-grid">
+          <form class="panel ticket-form" id="ticket-form">
+            <div class="panel-header">
+              <p class="eyebrow">Nuovo ticket</p>
+              <h2>Crea richiesta</h2>
+              <span class="local-badge">Sprint L18</span>
+            </div>
+
+            <label>
+              Titolo
+              <input id="title" name="title" placeholder="Es. Impossibile accedere al portale clienti" required />
+            </label>
+
+            <label>
+              Cliente
+              <input id="customer" name="customer" placeholder="Es. Alfa S.r.l." required />
+            </label>
+
+            <fieldset>
+              <legend>Priorita'</legend>
+              <div class="segmented">
+                <label><input type="radio" name="priority" value="bassa" /> <span class="dot low"></span>bassa</label>
+                <label><input type="radio" name="priority" value="normale" checked /> <span class="dot medium"></span>normale</label>
+                <label><input type="radio" name="priority" value="alta" /> <span class="dot high"></span>alta</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Canale richiesta</legend>
+              <div class="segmented">
+                <label><input type="radio" name="sourceChannel" value="email" checked /> email</label>
+                <label><input type="radio" name="sourceChannel" value="telefono" /> telefono</label>
+                <label><input type="radio" name="sourceChannel" value="chat" /> chat</label>
+              </div>
+            </fieldset>
+
+            <label>
+              Descrizione
+              <textarea id="description" name="description" rows="5" placeholder="Descrivi in dettaglio la richiesta del cliente..."></textarea>
+            </label>
+
+            <div class="server-field">
+              <span>Campo calcolato dal server</span>
+              <strong id="server-field-preview">urgencyLabel: da calcolare</strong>
+              <p>La UI non deve decidere questo valore.</p>
+            </div>
+
+            <button type="submit">Salva ticket</button>
+            <p class="form-status" id="form-status" role="status">Pronto.</p>
+          </form>
+
+          <section class="panel ticket-board" aria-labelledby="ticket-list-title">
+            <div class="board-toolbar">
+              <div>
+                <p class="eyebrow">Elenco ticket</p>
+                <h2 id="ticket-list-title">Coda supporto</h2>
+              </div>
+              <div class="toolbar-actions">
+                <span class="counter" id="ticket-count">0</span>
+                <button class="ghost-button" id="reload-button" type="button">Aggiorna</button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Titolo</th>
+                    <th>Cliente</th>
+                    <th>Priorita'</th>
+                    <th>Canale</th>
+                    <th>Urgency label</th>
+                    <th>Stato</th>
+                    <th>Azioni</th>
+                  </tr>
+                </thead>
+                <tbody id="ticket-table-body"></tbody>
+              </table>
+            </div>
+
+            <div class="empty-panel" id="empty-panel" hidden>
+              <strong>Nessun ticket trovato</strong>
+              <span>La lista verra' aggiornata dopo il salvataggio.</span>
+            </div>
+          </section>
+        </section>
+
+        <section class="panel ticket-details" id="ticket-details" aria-labelledby="ticket-details-title" hidden>
+          <div class="details-header">
+            <div>
+              <p class="eyebrow">Dettagli ticket</p>
+              <h2 id="ticket-details-title">Seleziona un ticket</h2>
+            </div>
+            <button class="ghost-button" id="close-details" type="button">Chiudi</button>
+          </div>
+          <p class="details-customer" id="ticket-details-customer"></p>
+          <div class="details-body" id="ticket-details-body"></div>
+        </section>
+
+        <section class="evidence-grid" aria-label="Evidenze runtime">
+          <article class="evidence-card">
+            <span>payload</span>
+            <pre id="payload-preview">{}</pre>
+          </article>
+          <article class="evidence-card">
+            <span>response</span>
+            <pre id="response-preview">In attesa di una request.</pre>
+          </article>
+          <article class="evidence-card success-card">
+            <span>caso valido</span>
+            <strong>alta + telefono → intervento rapido</strong>
+          </article>
+          <article class="evidence-card error-card">
+            <span>caso invalido</span>
+            <strong>whatsapp → 400 fieldErrors.sourceChannel</strong>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

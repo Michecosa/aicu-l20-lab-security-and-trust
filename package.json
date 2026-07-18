@@ -1,0 +1,26 @@
+{
+  "name": "aicu-l20-student-starter",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "dev": "node server/index.js",
+    "start": "node server/index.js",
+    "check": "node --check server/index.js && node --check server/app.js && node --check server/ticket-rules.js && node --check server/validation.js && node --check src/main.js",
+    "test": "node --test \"tests/unit/*.test.js\" \"tests/api/*.test.js\"",
+    "test:unit": "node --test \"tests/unit/*.test.js\"",
+    "test:api": "node --test \"tests/api/*.test.js\"",
+    "start:test": "node scripts/start-test-server.js",
+    "test:e2e": "playwright test",
+    "test:all": "pnpm test && pnpm test:e2e",
+    "check:requests": "node scripts/check-requests.js",
+    "demo:direct-request": "node scripts/demo-direct-request.js",
+    "setup:browsers": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1"
+  }
+}
