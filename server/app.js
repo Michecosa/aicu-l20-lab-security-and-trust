@@ -154,6 +154,14 @@ export function createTicketApplication({
 
       serveStatic(request, response, rootDir);
     } catch (error) {
+      if (error instanceof InvalidJsonError) {
+        sendJson(response, 400, {
+          code: "INVALID_JSON",
+          message: "Il body della richiesta non e' JSON valido."
+        });
+        return;
+      }
+
       logger.error({
         operation,
         errorCode: operation === "create_ticket" ? "DB_WRITE_FAILED" : "UNEXPECTED_ERROR",
@@ -277,6 +285,8 @@ function sendJson(response, statusCode, payload) {
   response.end(JSON.stringify(payload));
 }
 
+class InvalidJsonError extends Error {}
+
 async function readJsonBody(request) {
   const chunks = [];
 
@@ -288,7 +298,11 @@ async function readJsonBody(request) {
     return {};
   }
 
-  return JSON.parse(Buffer.concat(chunks).toString("utf8"));
+  try {
+    return JSON.parse(Buffer.concat(chunks).toString("utf8"));
+  } catch {
+    throw new InvalidJsonError("Il body della richiesta non e' JSON valido.");
+  }
 }
 
 function serveStatic(request, response, rootDir) {
